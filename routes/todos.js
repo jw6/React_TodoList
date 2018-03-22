@@ -1,57 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models/database');
+const helper = require('../helper/todos');
 
-router.get('/', function(req, res) {
-  db.Todo.find()
-    .then(function(todos) {
-      res.json(todos)
-    })
-    .catch(function(err) {
-      res.send(err);
-    })
-});
+router.route('/')
+  .get(helper.getTodos)
+  .post(helper.createTodo);
 
-router.post('/', function(req, res){
-  // mongoose create will create the json object
-  // since body-parser has done the work
-  db.Todo.create(req.body)
-    .then(function(newTodo){
-      res.json(newTodo);
-    })
-    .catch(function(err){
-      res.send(err);
-    })
-});
-
-router.get('/:todoId', function(req, res) {
-  db.Todo.findById(req.params.todoId)
-    .then(function(foundTodo) {
-      res.json(foundTodo)
-    })
-    .catch(function(err) {
-      res.send(err);
-    })
-});
-
-router.put('/:todoId', function(req, res) {
-  db.Todo.findOneAndUpdate({ _id: req.params.todoId }, req.body, {new: true})
-    .then(function(todo) {
-      res.json(todo);
-    })
-    .catch(function(err) {
-      res.send(err);
-    })
-});
-
-router.delete('/:todoId', function(req, res) {
-  db.Todo.remove({ _id: req.params.todoId })
-    .then(function() {
-      res.json({message: 'We deleted it!'})
-    })
-    .catch(function(err) {
-      res.send(err);
-    })
-})
+router.route('/:todoId')
+  .get(helper.getTodo)
+  .put(helper.updateTodo)
+  .delete(helper.deleteTodo);
 
 module.exports = router;
