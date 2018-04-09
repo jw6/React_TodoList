@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // const port = 3000;
 
 // for the future deployment with Heroku
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 
 app.get('/', function(req, res) {
   res.send('HI FROM THE ROOT ROUTES');
