@@ -1,7 +1,10 @@
 import React from 'react';
 
-const TodoItem = ({name}) => (
-  <li>
+const TodoItem = ({name, completed}) => (
+  <li
+    style={{
+      textDecoration: completed? 'line-through':'none'
+    }}>
     {name} 
   </li>
 );
