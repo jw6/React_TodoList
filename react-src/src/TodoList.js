@@ -84,12 +84,42 @@ class TodoList extends Component {
         this.setState({ todos: todos  })
       })
   }
+
+  toggleTodo(todo) {
+    const updateURL = APIURL + todo._id;
+    fetch(updateURL, {
+      method: 'put',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+      body: JSON.stringify({ completed: !todo.completed })
+    })
+      .then(res => {
+        if (!res.ok) {
+          if (res.status >= 400 && res.status < 500) {
+            return res.json().then(data => {
+              let err = { errorMessage: data.message };
+              throw err;
+            })
+          } else {
+            let err = { errorMessage: 'Please try again later, server is not responding' };
+            throw err;
+          }
+        }
+        return res.json();
+      })
+      .then(updatedTodo => {
+        const todos = this.state.todos.map(t => (t._id === updatedTodo._id) ? {...t, completed : !t.completed} : t)
+        this.setState({ todos: todos })
+      })
+  }
   render() {
     const todos = this.state.todos.map((t) => (
       <TodoItem
         key={t._id}
         {...t}
         onDelete = {this.deleteTodo.bind(this, t._id)}
+        onToggle = {this.toggleTodo.bind(this, t)}
         />
     ));
     return (
